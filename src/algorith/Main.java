@@ -25,14 +25,14 @@ public class Main {
 
     public static void verificationSaisie(String saisie)
     {
-        if(polonaiseInverse(saisie) == Double.POSITIVE_INFINITY)
-        {
-            throw new IllegalArgumentException("Il y a une division par zero dans le calcul");
-        }
-
         if(!verifNombreEtSynbole(saisie))
         {
             throw new IllegalArgumentException("la saisie du calcul ne contient pas que des nombres ou des symboles");
+        }
+
+        if(polonaiseInverse(saisie) == Double.POSITIVE_INFINITY)
+        {
+            throw new IllegalArgumentException("Il y a une division par zero dans le calcul");
         }
     }
 
@@ -41,12 +41,10 @@ public class Main {
         for(int i = 0; i < saisie.length(); i++)
         {
             int ascii = saisie.charAt(i);
-            if(ascii < 48 || ascii > 57)
+            if((ascii < 48 || ascii > 57)
+                    && (ascii != 42 && ascii != 43 && ascii != 45 && ascii != 47 && ascii != 32 && ascii != 46))
             {
-                if(ascii != 42 && ascii != 43 && ascii != 45 && ascii != 47 && ascii != 32 && ascii != 46)
-                {
-                    return false;
-                }
+                return false;
             }
         }
         return true;
@@ -142,7 +140,8 @@ public class Main {
     public static List<Double> pop(List<Double> listeDouble)
     {
         List<Double> res = new ArrayList<>();
-        if(sizeOf(listeDouble) > 1)
+        final int minimumSize = 1;
+        if(sizeOf(listeDouble) > minimumSize)
         {
             for (int i = 0; i < sizeOf(listeDouble) - 1; i++)
             {
