@@ -1,3 +1,5 @@
+package algorith;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,50 +41,38 @@ public class Main {
         }
     }
 
-    public static int polonaiseInverse(String calcul)
+    public static double polonaiseInverse(String calcul)
     {
         List<String> listeDeCharatere = Arrays.stream(calcul.split(" ")).toList();
-        List<Integer> pileOperande = new ArrayList<>();
+        List<Double> pileOperande = new ArrayList<>();
         List<String> operateur = Arrays.asList("+","-","*","/");
 
         for(int i = 0; i < listeDeCharatere.size(); i++)
         {
             if(operateur.contains(listeDeCharatere.get(i)))
             {
-                int operation = calculOperande(pileOperande, listeDeCharatere, i);
+                double operation = calculOperande(pileOperande, listeDeCharatere, i);
                 pileOperande.remove(pileOperande.size() - 1);
                 pileOperande.remove(pileOperande.size() - 1);
                 pileOperande.add(operation);
             }
             else
             {
-                pileOperande.add(Integer.valueOf(listeDeCharatere.get(i)));
+                pileOperande.add(Double.valueOf(listeDeCharatere.get(i)));
             }
         }
 
         return pileOperande.get(0);
     }
 
-    public static int calculOperande(List<Integer> pileOperande, List<String> listeDeCharatere, int pos)
+    public static double calculOperande(List<Double> pileOperande, List<String> listeDeCharatere, int pos)
     {
-        int operation = 0;
-
-        switch (listeDeCharatere.get(pos))
-        {
-            case "+":
-                operation = pileOperande.get(pileOperande.size() - 2) + pileOperande.get(pileOperande.size() - 1);
-                break;
-            case "-":
-                operation = pileOperande.get(pileOperande.size() - 2) - pileOperande.get(pileOperande.size() - 1);
-                break;
-            case "*":
-                operation = pileOperande.get(pileOperande.size() - 2) * pileOperande.get(pileOperande.size() - 1);
-                break;
-            case "/":
-                operation = pileOperande.get(pileOperande.size() - 2) / pileOperande.get(pileOperande.size() - 1);
-                break;
-        }
-
-        return operation;
+        return switch (listeDeCharatere.get(pos)) {
+            case "+" -> pileOperande.get(pileOperande.size() - 2) + pileOperande.get(pileOperande.size() - 1);
+            case "-" -> pileOperande.get(pileOperande.size() - 2) - pileOperande.get(pileOperande.size() - 1);
+            case "*" -> pileOperande.get(pileOperande.size() - 2) * pileOperande.get(pileOperande.size() - 1);
+            case "/" -> pileOperande.get(pileOperande.size() - 2) / pileOperande.get(pileOperande.size() - 1);
+            default -> 1;
+        };
     }
 }
