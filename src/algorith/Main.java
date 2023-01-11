@@ -73,14 +73,25 @@ public class Main {
 
     public static double calculOperande(List<Double> pileOperande, List<String> listeDeCharatere, int pos)
     {
-        return switch (listeDeCharatere.get(pos))
+        double operation;
+        switch (listeDeCharatere.get(pos))
         {
-            case "+" -> pileOperande.get(pileOperande.size() - 2) + pileOperande.get(pileOperande.size() - 1);
-            case "-" -> pileOperande.get(pileOperande.size() - 2) - pileOperande.get(pileOperande.size() - 1);
-            case "*" -> pileOperande.get(pileOperande.size() - 2) * pileOperande.get(pileOperande.size() - 1);
-            case "/" -> pileOperande.get(pileOperande.size() - 2) / pileOperande.get(pileOperande.size() - 1);
-            default -> 0;
-        };
+            case "+":
+                operation = pileOperande.get(pileOperande.size() - 2) + pileOperande.get(pileOperande.size() - 1);
+            break;
+            case "-":
+                operation = pileOperande.get(pileOperande.size() - 2) - pileOperande.get(pileOperande.size() - 1);
+            break;
+            case "*":
+                operation = pileOperande.get(pileOperande.size() - 2) * pileOperande.get(pileOperande.size() - 1);
+            break;
+            case "/":
+                operation = pileOperande.get(pileOperande.size() - 2) / pileOperande.get(pileOperande.size() - 1);
+            break;
+            default:
+                operation = 0;
+        }
+        return operation;
     }
 
     public static List<String> split(String str)
