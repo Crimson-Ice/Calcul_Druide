@@ -1,11 +1,5 @@
 package algorith;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args)
@@ -27,33 +21,46 @@ public class Main {
 
     public static void verificationSaisie(String saisie)
     {
-        String regex = "(\\d+)|([+|\\-|*|/]+)";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(saisie);
-
-        if (!saisie.matches("^\\s*\\d*\\s\\d*\\s+[^\\d].*")) {
-            throw new IllegalArgumentException("Il n'y a pas deux nombres a gauche du premier symbole");
+        if(polonaiseInverse(saisie) == Double.POSITIVE_INFINITY)
+        {
+            throw new IllegalArgumentException("Il y a une division par zero dans le calcul");
         }
 
-        while(!matcher.find())
+        if(!verifNombreEtSynbole(saisie))
         {
             throw new IllegalArgumentException("la saisie du calcul ne contient pas que des nombres ou des symboles");
         }
     }
 
+    public static boolean verifNombreEtSynbole(String saisie)
+    {
+        for(int i = 0; i < saisie.length(); i++)
+        {
+            int ascii = saisie.charAt(i);
+            if(ascii < 48 || ascii > 57)
+            {
+                if(ascii != 42 && ascii != 43 && ascii != 45 && ascii != 47 && ascii != 32 && ascii != 46)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public static double polonaiseInverse(String calcul)
     {
-        List<String> listeDeCharatere = Arrays.stream(calcul.split(" ")).toList();
+        List<String> listeDeCharatere = split(calcul);
         List<Double> pileOperande = new ArrayList<>();
         List<String> operateur = Arrays.asList("+","-","*","/");
 
-        for(int i = 0; i < listeDeCharatere.size(); i++)
+        for(int i = 0; i < sizeOf(listeDeCharatere); i++)
         {
-            if(operateur.contains(listeDeCharatere.get(i)))
+            if(listeContainsElement(operateur, listeDeCharatere.get(i)))
             {
                 double operation = calculOperande(pileOperande, listeDeCharatere, i);
-                pileOperande.remove(pileOperande.size() - 1);
-                pileOperande.remove(pileOperande.size() - 1);
+                pileOperande = pop(pileOperande);
+                pileOperande = pop(pileOperande);
                 pileOperande.add(operation);
             }
             else
@@ -61,18 +68,72 @@ public class Main {
                 pileOperande.add(Double.valueOf(listeDeCharatere.get(i)));
             }
         }
-
         return pileOperande.get(0);
     }
 
     public static double calculOperande(List<Double> pileOperande, List<String> listeDeCharatere, int pos)
     {
-        return switch (listeDeCharatere.get(pos)) {
+        return switch (listeDeCharatere.get(pos))
+        {
             case "+" -> pileOperande.get(pileOperande.size() - 2) + pileOperande.get(pileOperande.size() - 1);
             case "-" -> pileOperande.get(pileOperande.size() - 2) - pileOperande.get(pileOperande.size() - 1);
             case "*" -> pileOperande.get(pileOperande.size() - 2) * pileOperande.get(pileOperande.size() - 1);
             case "/" -> pileOperande.get(pileOperande.size() - 2) / pileOperande.get(pileOperande.size() - 1);
-            default -> 1;
+            default -> 0;
         };
+    }
+
+    public static List<String> split(String str)
+    {
+        List<String> res = new ArrayList<>();
+        int i = 0;
+
+        while(i < str.length())
+        {
+            StringBuilder tmp = new StringBuilder();
+            while (i < str.length() && str.charAt(i) != ' ')
+            {
+                tmp.append(str.charAt(i));
+                i++;
+            }
+            i++;
+            res.add(tmp.toString());
+        }
+
+        return res;
+    }
+
+    public static <T> int sizeOf(List<T> listStr)
+    {
+        int count = 0;
+        for (T ignored : listStr) {
+            count++;
+        }
+        return count;
+    }
+
+    public static boolean listeContainsElement(List<String> listeStr, String str)
+    {
+        for (int i = 0; i < sizeOf(listeStr); i++)
+        {
+            if(Objects.equals(listeStr.get(i), str))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static List<Double> pop(List<Double> listeDouble)
+    {
+        List<Double> res = new ArrayList<>();
+        if(sizeOf(listeDouble) > 1)
+        {
+            for (int i = 0; i < sizeOf(listeDouble) - 1; i++)
+            {
+                res.add(listeDouble.get(i));
+            }
+        }
+        return res;
     }
 }
