@@ -1,16 +1,20 @@
 package algorith;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Main {
+
+    public static Logger logger = Logger.getLogger(Main.class.getName());
     public static void main(String[] args)
     {
-        System.out.println(polonaiseInverse(saisie()));
+        double res = polonaiseInverse(saisie());
+        logger.info(String.valueOf(res));
     }
 
     public static String saisie()
     {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Entrer un calcul : ");
+        logger.info("Entrer un calcul : ");
         String calcul = scanner.nextLine();
         scanner.close();
 
