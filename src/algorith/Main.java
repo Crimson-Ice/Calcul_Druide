@@ -11,29 +11,36 @@ public class Main {
         logger.info(String.valueOf(res));
     }
 
-    public static String saisie()
+    public static List<String> saisie()
     {
         Scanner scanner = new Scanner(System.in);
         logger.info("Entrer un calcul : ");
         String calcul = scanner.nextLine();
         scanner.close();
 
-        verificationSaisie(calcul);
-
-        return calcul;
+        return verificationSaisie(calcul);
     }
 
-    public static void verificationSaisie(String saisie)
+    public static List<String> verificationSaisie(String saisie)
     {
+        List<String> listeSaisie = split(saisie);
+
         if(!verifNombreEtSynbole(saisie))
         {
             throw new IllegalArgumentException("la saisie du calcul ne contient pas que des nombres ou des symboles");
         }
 
-        if(polonaiseInverse(saisie) == Double.POSITIVE_INFINITY)
+        if(!verifDeuxNombresAvantSymbole(listeSaisie))
+        {
+            throw new IllegalArgumentException("Il n'y a pas deux nombres avant le premier symbole");
+        }
+
+        if(polonaiseInverse(listeSaisie) == Double.POSITIVE_INFINITY)
         {
             throw new IllegalArgumentException("Il y a une division par zero dans le calcul");
         }
+
+        return listeSaisie;
     }
 
     public static boolean verifNombreEtSynbole(String saisie)
@@ -50,24 +57,42 @@ public class Main {
         return true;
     }
 
-    public static double polonaiseInverse(String calcul)
+    public static boolean verifDeuxNombresAvantSymbole(List<String> listeSaisie)
     {
-        List<String> listeDeCharatere = split(calcul);
+        int compteurNombre = 0;
+        for(int i = 0; i < sizeOf(listeSaisie); i++)
+        {
+            int ascii = listeSaisie.get(i).charAt(0);
+            if(ascii >= 48 && ascii <= 57)
+            {
+                compteurNombre += listeSaisie.get(i).length();
+            }
+
+            if(ascii == 42 || ascii == 43 || ascii == 45 || ascii == 47)
+            {
+                return compteurNombre >= 2;
+            }
+        }
+        return false;
+    }
+
+    public static double polonaiseInverse(List<String> listeSaisie)
+    {
         List<Double> pileOperande = new ArrayList<>();
         List<String> operateur = Arrays.asList("+","-","*","/");
 
-        for(int i = 0; i < sizeOf(listeDeCharatere); i++)
+        for(int i = 0; i < sizeOf(listeSaisie); i++)
         {
-            if(listeContainsElement(operateur, listeDeCharatere.get(i)))
+            if(listeContainsElement(operateur, listeSaisie.get(i)))
             {
-                double operation = calculOperande(pileOperande, listeDeCharatere, i);
+                double operation = calculOperande(pileOperande, listeSaisie, i);
                 pileOperande = pop(pileOperande);
                 pileOperande = pop(pileOperande);
                 pileOperande.add(operation);
             }
             else
             {
-                pileOperande.add(Double.valueOf(listeDeCharatere.get(i)));
+                pileOperande.add(Double.valueOf(listeSaisie.get(i)));
             }
         }
         return pileOperande.get(0);
@@ -116,10 +141,10 @@ public class Main {
         return res;
     }
 
-    public static <T> int sizeOf(List<T> listStr)
+    public static <T> int sizeOf(List<T> liste)
     {
         int count = 0;
-        for (T ignored : listStr) {
+        for (T ignored : liste) {
             count++;
         }
         return count;
