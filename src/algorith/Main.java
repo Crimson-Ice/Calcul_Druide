@@ -15,20 +15,20 @@ public class Main {
     {
         Scanner scanner = new Scanner(System.in);
         logger.info("Entrer un calcul : ");
-        String calcul = scanner.nextLine();
+        String saisie = scanner.nextLine();
         scanner.close();
 
-        return verificationSaisie(calcul);
+        return verificationSaisie(saisie);
     }
 
     public static List<String> verificationSaisie(String saisie)
     {
-        List<String> listeSaisie = split(saisie);
-
         if(!verifNombreEtSynbole(saisie))
         {
             throw new IllegalArgumentException("la saisie du calcul ne contient pas que des nombres ou des symboles");
         }
+
+        List<String> listeSaisie = split(saisie);
 
         if(!verifDeuxNombresAvantSymbole(listeSaisie))
         {
